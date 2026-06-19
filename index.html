@@ -11,90 +11,188 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#ff6b6b',
+                            dark: '#ff5252'
+                        },
+                        dark: {
+                            bg: '#121212',
+                            surface: '#1e1e1e',
+                            surface2: '#2d2d2d'
+                        },
+                        accent: '#fca311'
+                    },
+                    fontFamily: {
+                        main: ['Outfit', 'sans-serif'],
+                        heading: ['Playfair Display', 'serif']
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        pulseGlow: {
+                            '0%': { boxShadow: '0 0 0 0 rgba(37, 211, 102, 0.7)' },
+                            '70%': { boxShadow: '0 0 0 15px rgba(37, 211, 102, 0)' },
+                            '100%': { boxShadow: '0 0 0 0 rgba(37, 211, 102, 0)' }
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            html { scroll-behavior: smooth; }
+            body { 
+                @apply font-main bg-dark-bg text-gray-100 overflow-x-hidden leading-relaxed;
+            }
+        }
+        @layer components {
+            .btn {
+                @apply inline-block px-8 py-3.5 rounded-full font-semibold text-lg cursor-pointer transition-all duration-300 uppercase tracking-wide border-none;
+            }
+            .btn-primary {
+                @apply bg-primary text-white shadow-[0_4px_15px_rgba(255,107,107,0.4)] hover:bg-primary-dark hover:-translate-y-1 hover:shadow-[0_6px_20px_rgba(255,107,107,0.6)];
+            }
+            .nav-link {
+                @apply font-medium relative py-1 transition-all duration-300 hover:text-primary;
+            }
+            .nav-link::after {
+                content: '';
+                @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300;
+            }
+            .nav-link:hover::after,
+            .nav-link.active::after {
+                @apply w-full;
+            }
+            .nav-link.active {
+                @apply text-primary;
+            }
+            .navbar.scrolled {
+                @apply bg-dark-bg/95 py-4 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.5)];
+            }
+            
+            /* Mobile menu styles to support existing script.js */
+            .nav-links {
+                @apply fixed top-0 -right-full w-[70%] h-screen bg-dark-surface flex flex-col justify-center items-center gap-8 transition-all duration-500 z-[999] shadow-[-10px_0_30px_rgba(0,0,0,0.5)];
+            }
+            .nav-links.active {
+                @apply right-0;
+            }
+            @media (min-width: 768px) {
+                .nav-links {
+                    @apply static w-auto h-auto bg-transparent flex-row justify-end shadow-none right-auto;
+                }
+            }
+
+            .fade-in-up {
+                opacity: 0;
+                animation: fadeInUp 1s forwards ease-out;
+            }
+            .delay-1 { animation-delay: 0.3s; }
+            .delay-2 { animation-delay: 0.6s; }
+        }
+    </style>
 </head>
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="#" class="logo">Ceylon<span>Spice</span></a>
+    <nav class="navbar fixed top-0 left-0 w-full py-6 z-[1000] transition-all duration-300" id="navbar">
+        <div class="flex justify-between items-center max-w-7xl mx-auto px-5">
+            <a href="#" class="font-heading text-3xl font-semibold text-white">Ceylon<span class="text-primary">Spice</span></a>
             <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#menu">Menu</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#gallery">Gallery</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#menu" class="nav-link">Menu</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#gallery" class="nav-link">Gallery</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
-            <div class="hamburger">
+            <div class="hamburger block md:hidden text-2xl cursor-pointer text-white z-[1000]">
                 <i class="fas fa-bars"></i>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <header class="hero" id="home">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <h1 class="fade-in-up">Authentic Taste <br>of Sri Lanka</h1>
-            <p class="fade-in-up delay-1">Experience the spice and soul of the island.</p>
+    <header class="h-screen bg-[url('images/hero_bg.png')] bg-center bg-cover bg-no-repeat relative flex items-center justify-center text-center px-5" id="home">
+        <div class="absolute inset-0 bg-gradient-to-b from-dark-bg/70 to-dark-bg/95"></div>
+        <div class="relative z-10 max-w-3xl mx-auto">
+            <h1 class="fade-in-up font-heading text-5xl md:text-7xl leading-tight mb-5 text-white">Authentic Taste <br>of Sri Lanka</h1>
+            <p class="fade-in-up delay-1 text-xl md:text-2xl text-gray-400 mb-10">Experience the spice and soul of the island.</p>
             <a href="" class="btn btn-primary fade-in-up delay-2">
-                <i class="fab fa-whatsapp"></i> Order via WhatsApp
+                <i class="fab fa-whatsapp mr-2 text-xl"></i> Order via WhatsApp
             </a>
         </div>
     </header>
 
     <!-- Menu Section -->
-    <section class="menu section" id="menu">
-        <div class="container">
-            <div class="section-title">
-                <h2>Our Menu</h2>
-                <p>Explore our delicious offerings</p>
+    <section class="py-24 bg-dark-bg" id="menu">
+        <div class="max-w-7xl mx-auto px-5">
+            <div class="text-center mb-16">
+                <h2 class="font-heading text-5xl text-primary mb-3">Our Menu</h2>
+                <p class="text-gray-400 text-lg uppercase tracking-widest">Explore our delicious offerings</p>
             </div>
             
-            <div class="menu-grid">
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-10">
                 <!-- Kottu -->
-                <div class="menu-item">
-                    <div class="menu-img">
-                        <img src="images/kottu.png" alt="Sri Lankan Kottu Roti">
-                        <div class="price">Rs. 1,450</div>
+                <div class="menu-item bg-dark-surface rounded-2xl overflow-hidden transition-all duration-300 border border-white/5 hover:-translate-y-2.5 hover:shadow-[0_15px_30px_rgba(0,0,0,0.5)] hover:border-primary/20 group">
+                    <div class="relative h-60 overflow-hidden">
+                        <img src="images/kottu.png" alt="Sri Lankan Kottu Roti" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute top-5 right-5 bg-primary text-white px-4 py-2 rounded-full font-bold text-lg shadow-[0_4px_10px_rgba(0,0,0,0.3)]">Rs. 1,450</div>
                     </div>
-                    <div class="menu-info">
-                        <h3>Chicken Kottu Roti</h3>
-                        <p>Iconic street food made with chopped flatbread, vegetables, egg, and spicy chicken curry.</p>
+                    <div class="p-6">
+                        <h3 class="text-2xl mb-2 font-heading">Chicken Kottu Roti</h3>
+                        <p class="text-gray-400 text-base">Iconic street food made with chopped flatbread, vegetables, egg, and spicy chicken curry.</p>
                     </div>
                 </div>
                 <!-- Lamprais -->
-                <div class="menu-item">
-                    <div class="menu-img">
-                        <img src="images/lamprais.png" alt="Lamprais">
-                        <div class="price">Rs. 1,800</div>
+                <div class="menu-item bg-dark-surface rounded-2xl overflow-hidden transition-all duration-300 border border-white/5 hover:-translate-y-2.5 hover:shadow-[0_15px_30px_rgba(0,0,0,0.5)] hover:border-primary/20 group">
+                    <div class="relative h-60 overflow-hidden">
+                        <img src="images/lamprais.png" alt="Lamprais" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute top-5 right-5 bg-primary text-white px-4 py-2 rounded-full font-bold text-lg shadow-[0_4px_10px_rgba(0,0,0,0.3)]">Rs. 1,800</div>
                     </div>
-                    <div class="menu-info">
-                        <h3>Traditional Lamprais</h3>
-                        <p>A Dutch-Burgher delicacy of rice, mixed meat curry, and sambols baked in a banana leaf.</p>
+                    <div class="p-6">
+                        <h3 class="text-2xl mb-2 font-heading">Traditional Lamprais</h3>
+                        <p class="text-gray-400 text-base">A Dutch-Burgher delicacy of rice, mixed meat curry, and sambols baked in a banana leaf.</p>
                     </div>
                 </div>
                 <!-- Hoppers -->
-                <div class="menu-item">
-                    <div class="menu-img">
-                        <img src="images/hoppers.png" alt="Egg Hoppers">
-                        <div class="price">Rs. 900</div>
+                <div class="menu-item bg-dark-surface rounded-2xl overflow-hidden transition-all duration-300 border border-white/5 hover:-translate-y-2.5 hover:shadow-[0_15px_30px_rgba(0,0,0,0.5)] hover:border-primary/20 group">
+                    <div class="relative h-60 overflow-hidden">
+                        <img src="images/hoppers.png" alt="Egg Hoppers" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute top-5 right-5 bg-primary text-white px-4 py-2 rounded-full font-bold text-lg shadow-[0_4px_10px_rgba(0,0,0,0.3)]">Rs. 900</div>
                     </div>
-                    <div class="menu-info">
-                        <h3>Egg Hoppers (Appa)</h3>
-                        <p>Crispy bowl-shaped pancakes with a fried egg, served with lunu miris and seeni sambol.</p>
+                    <div class="p-6">
+                        <h3 class="text-2xl mb-2 font-heading">Egg Hoppers (Appa)</h3>
+                        <p class="text-gray-400 text-base">Crispy bowl-shaped pancakes with a fried egg, served with lunu miris and seeni sambol.</p>
                     </div>
                 </div>
                 <!-- Dessert -->
-                <div class="menu-item">
-                    <div class="menu-img">
-                        <img src="images/watalappam.png" alt="Watalappam">
-                        <div class="price">Rs. 750</div>
+                <div class="menu-item bg-dark-surface rounded-2xl overflow-hidden transition-all duration-300 border border-white/5 hover:-translate-y-2.5 hover:shadow-[0_15px_30px_rgba(0,0,0,0.5)] hover:border-primary/20 group">
+                    <div class="relative h-60 overflow-hidden">
+                        <img src="images/watalappam.png" alt="Watalappam" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute top-5 right-5 bg-primary text-white px-4 py-2 rounded-full font-bold text-lg shadow-[0_4px_10px_rgba(0,0,0,0.3)]">Rs. 750</div>
                     </div>
-                    <div class="menu-info">
-                        <h3>Watalappam</h3>
-                        <p>Rich, traditional coconut custard pudding sweetened with jaggery and spiced with cardamom.</p>
+                    <div class="p-6">
+                        <h3 class="text-2xl mb-2 font-heading">Watalappam</h3>
+                        <p class="text-gray-400 text-base">Rich, traditional coconut custard pudding sweetened with jaggery and spiced with cardamom.</p>
                     </div>
                 </div>
             </div>
@@ -102,76 +200,86 @@
     </section>
 
     <!-- About Section -->
-    <section class="about section" id="about">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-text">
-                    <div class="section-title left-align">
-                        <h2>Our Story</h2>
-                        <p>A passion for culinary excellence</p>
-                    </div>
-                    <p>At Ceylon Spice, we believe that food is more than just sustenance—it's a journey. Founded with a passion for bringing authentic Sri Lankan flavors to your table, we source premium spices directly from the island to craft dishes that delight the senses.</p>
-                    <ul class="features">
-                        <li><i class="fas fa-check-circle"></i> 100% Fresh Ingredients</li>
-                        <li><i class="fas fa-check-circle"></i> Handcrafted with Love</li>
-                        <li><i class="fas fa-check-circle"></i> Fast & Reliable Service</li>
-                    </ul>
+    <section class="py-24 bg-dark-surface2" id="about">
+        <div class="flex flex-col lg:flex-row items-center gap-16 max-w-7xl mx-auto px-5">
+            <div class="about-text flex-1">
+                <div class="text-left mb-6">
+                    <h2 class="font-heading text-5xl text-primary mb-3">Our Story</h2>
+                    <p class="text-gray-400 text-lg uppercase tracking-widest">A passion for culinary excellence</p>
                 </div>
-                <div class="about-image">
-                    <img src="images/kottu.png" alt="Quality Food" class="floating-img">
-                </div>
+                <p class="text-lg text-gray-400 mb-8">At Ceylon Spice, we believe that food is more than just sustenance—it's a journey. Founded with a passion for bringing authentic Sri Lankan flavors to your table, we source premium spices directly from the island to craft dishes that delight the senses.</p>
+                <ul class="list-none space-y-4 text-lg">
+                    <li class="flex items-center"><i class="fas fa-check-circle text-primary mr-4 text-xl"></i> 100% Fresh Ingredients</li>
+                    <li class="flex items-center"><i class="fas fa-check-circle text-primary mr-4 text-xl"></i> Handcrafted with Love</li>
+                    <li class="flex items-center"><i class="fas fa-check-circle text-primary mr-4 text-xl"></i> Fast & Reliable Service</li>
+                </ul>
+            </div>
+            <div class="about-image flex-1 w-full relative">
+                <img src="images/kottu.png" alt="Quality Food" class="rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.6)] animate-float mx-auto w-full max-w-md lg:max-w-full">
             </div>
         </div>
     </section>
 
     <!-- Gallery Section -->
-    <section class="gallery section" id="gallery">
-        <div class="container">
-            <div class="section-title">
-                <h2>Our Gallery</h2>
-                <p>A feast for your eyes</p>
+    <section class="py-24 bg-dark-bg" id="gallery">
+        <div class="max-w-7xl mx-auto px-5">
+            <div class="text-center mb-16">
+                <h2 class="font-heading text-5xl text-primary mb-3">Our Gallery</h2>
+                <p class="text-gray-400 text-lg uppercase tracking-widest">A feast for your eyes</p>
             </div>
-            <div class="gallery-grid">
-                <div class="gallery-item"><img src="images/kottu.png" alt="Gallery Kottu"></div>
-                <div class="gallery-item"><img src="images/lamprais.png" alt="Gallery Lamprais"></div>
-                <div class="gallery-item"><img src="images/hoppers.png" alt="Gallery Hoppers"></div>
-                <div class="gallery-item"><img src="images/watalappam.png" alt="Gallery Watalappam"></div>
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-5">
+                <div class="gallery-item rounded-2xl overflow-hidden aspect-square cursor-pointer relative group">
+                    <div class="absolute inset-0 bg-primary/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
+                    <img src="images/kottu.png" alt="Gallery Kottu" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 relative z-0">
+                </div>
+                <div class="gallery-item rounded-2xl overflow-hidden aspect-square cursor-pointer relative group">
+                    <div class="absolute inset-0 bg-primary/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
+                    <img src="images/lamprais.png" alt="Gallery Lamprais" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 relative z-0">
+                </div>
+                <div class="gallery-item rounded-2xl overflow-hidden aspect-square cursor-pointer relative group">
+                    <div class="absolute inset-0 bg-primary/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
+                    <img src="images/hoppers.png" alt="Gallery Hoppers" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 relative z-0">
+                </div>
+                <div class="gallery-item rounded-2xl overflow-hidden aspect-square cursor-pointer relative group">
+                    <div class="absolute inset-0 bg-primary/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
+                    <img src="images/watalappam.png" alt="Gallery Watalappam" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 relative z-0">
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Contact Section -->
-    <section class="contact section" id="contact">
-        <div class="container">
-            <div class="section-title">
-                <h2>Contact Us</h2>
-                <p>We'd love to hear from you</p>
+    <section class="py-24 bg-dark-surface2" id="contact">
+        <div class="max-w-7xl mx-auto px-5">
+            <div class="text-center mb-16">
+                <h2 class="font-heading text-5xl text-primary mb-3">Contact Us</h2>
+                <p class="text-gray-400 text-lg uppercase tracking-widest">We'd love to hear from you</p>
             </div>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <div class="info-item">
-                        <div class="icon"><i class="fas fa-phone-alt"></i></div>
+            <div class="contact-content flex flex-col lg:flex-row gap-0 bg-dark-surface rounded-3xl overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+                <div class="flex-1 p-12 flex flex-col justify-center gap-10">
+                    <div class="flex items-start gap-5">
+                        <div class="bg-primary/10 text-primary w-12 h-12 rounded-full flex items-center justify-center text-xl shrink-0"><i class="fas fa-phone-alt"></i></div>
                         <div>
-                            <h4>Phone</h4>
-                            <p>+1 (555) 123-4567</p>
+                            <h4 class="text-xl mb-1 font-heading">Phone</h4>
+                            <p class="text-gray-400">+1 (555) 123-4567</p>
                         </div>
                     </div>
-                    <div class="info-item">
-                        <div class="icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="flex items-start gap-5">
+                        <div class="bg-primary/10 text-primary w-12 h-12 rounded-full flex items-center justify-center text-xl shrink-0"><i class="fas fa-map-marker-alt"></i></div>
                         <div>
-                            <h4>Location</h4>
-                            <p>123 Culinary Lane, Food City, FC 90210</p>
+                            <h4 class="text-xl mb-1 font-heading">Location</h4>
+                            <p class="text-gray-400">123 Culinary Lane, Food City, FC 90210</p>
                         </div>
                     </div>
-                    <div class="info-item">
-                        <div class="icon"><i class="fas fa-clock"></i></div>
+                    <div class="flex items-start gap-5">
+                        <div class="bg-primary/10 text-primary w-12 h-12 rounded-full flex items-center justify-center text-xl shrink-0"><i class="fas fa-clock"></i></div>
                         <div>
-                            <h4>Opening Hours</h4>
-                            <p>Mon - Sun: 10:00 AM - 11:00 PM</p>
+                            <h4 class="text-xl mb-1 font-heading">Opening Hours</h4>
+                            <p class="text-gray-400">Mon - Sun: 10:00 AM - 11:00 PM</p>
                         </div>
                     </div>
                 </div>
-                <div class="map-container">
+                <div class="flex-1 min-h-[300px] lg:min-h-[450px]">
                     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.221990120496!2d-74.00369368459418!3d40.71305417933185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a23e28c1191%3A0x49f75d3281df052a!2s150%20Park%20Row%2C%20New%20York%2C%20NY%2010007!5e0!3m2!1sen!2sus!4v1689255852589!5m2!1sen!2sus" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
             </div>
@@ -179,27 +287,27 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h2>Ceylon<span>Spice</span></h2>
-                    <p>Authentic Sri Lankan cuisine.</p>
+    <footer class="bg-[#0a0a0a] pt-16 pb-8 text-center px-5">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-10">
+                <div class="mb-8">
+                    <h2 class="font-heading text-4xl mb-2 text-white">Ceylon<span class="text-primary">Spice</span></h2>
+                    <p class="text-gray-400">Authentic Sri Lankan cuisine.</p>
                 </div>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
+                <div class="flex justify-center gap-5">
+                    <a href="#" class="w-10 h-10 rounded-full bg-dark-surface text-gray-100 flex items-center justify-center transition-all duration-300 hover:bg-primary hover:text-white hover:-translate-y-1"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-dark-surface text-gray-100 flex items-center justify-center transition-all duration-300 hover:bg-primary hover:text-white hover:-translate-y-1"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-dark-surface text-gray-100 flex items-center justify-center transition-all duration-300 hover:bg-primary hover:text-white hover:-translate-y-1"><i class="fab fa-twitter"></i></a>
                 </div>
             </div>
-            <div class="copyright">
+            <div class="text-gray-400 text-sm border-t border-white/5 pt-8">
                 &copy; <span id="year"></span> Ceylon Spice. All rights reserved.
             </div>
         </div>
     </footer>
 
     <!-- Floating WhatsApp Button -->
-    <a href="" class="floating-whatsapp" target="_blank" aria-label="Order via WhatsApp">
+    <a href="" class="fixed bottom-8 right-8 w-16 h-16 bg-[#25d366] text-white rounded-full flex items-center justify-center text-3xl shadow-[0_4px_15px_rgba(37,211,102,0.4)] z-[1000] transition-all duration-300 hover:scale-110 hover:bg-[#128c7e] animate-pulse-glow" target="_blank" aria-label="Order via WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
 
